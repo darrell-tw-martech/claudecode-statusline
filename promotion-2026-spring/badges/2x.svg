@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="62" height="24">
   <rect width="62" height="24" rx="4" fill="#C4724A"/>
-  <text x="31" y="17" text-anchor="middle" font-family="monospace" font-size="13" font-weight="bold" fill="#1c1c1c">&#9889; 2x</text>
+  <path d="M14 4 L9 13 L13 13 L11 20 L18 10 L14 10 Z" fill="#1c1c1c"/>
+  <text x="38" y="17" text-anchor="middle" font-family="monospace" font-size="13" font-weight="bold" fill="#1c1c1c">2x</text>
 </svg>
