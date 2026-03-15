@@ -1,36 +1,36 @@
-# ⚡ Claude Code Statusline — 2x Promotion Indicator
+# ⚡ Claude Code Statusline — 2x 用量加倍指示器
 
-Show whether you're in the **2x usage** window directly in your Claude Code statusline.
+在 Claude Code 的 statusline 上即時顯示你是否在 **2 倍用量**的時段。
 
-**Promotion period:** March 13 – 27, 2026 ([Anthropic announcement](https://support.anthropic.com/en/articles/11360-claude-march-2026-usage-promotion))
+**活動期間：** 2026 年 3 月 13 日 ~ 3 月 27 日（[Anthropic 官方公告](https://support.anthropic.com/en/articles/11360-claude-march-2026-usage-promotion)）
 
-## What it looks like
+## 顯示效果
 
-| Status | Segment | When |
-|--------|---------|------|
-| **Off-peak (doubled)** | `⚡2x` on orange | Outside EDT 8AM–2PM |
-| **Peak (normal)** | `⚡1x` on gray | EDT 8AM–2PM |
-| **Ended** | `⚡2x ended` on red | March 28 only |
+| 狀態 | 顯示 | 時段 |
+|------|------|------|
+| **離峰（用量加倍）** | `⚡2x` 橘棕底黑字 | EDT 8AM–2PM 以外 |
+| **尖峰（正常用量）** | `⚡1x` 深灰底灰字 | EDT 8AM–2PM |
+| **活動結束** | `⚡2x ended` 紅底白字 | 僅 3/28 當天 |
 
-The segment automatically disappears after March 28.
+3/29 起自動消失，不需手動移除。
 
-## Time zones
+## 時區對照
 
-The promotion doubles your 5-hour usage outside **8 AM – 2 PM ET (EDT, UTC-4)**.
+活動在 **EDT 8AM–2PM（UTC 12:00–18:00）** 為尖峰，其餘時段用量加倍。
 
-| Your timezone | Off-peak (2x) | Peak (1x) |
-|---------------|---------------|-----------|
-| UTC | 18:00 – 12:00 next day | 12:00 – 18:00 |
-| PT (PDT) | 5 AM – 11 PM | 5 AM – 11 AM *(wait, see note)* |
-| JST (UTC+9) | 3:00 AM – 9:00 PM | 9:00 PM – 3:00 AM |
-| CST/TW (UTC+8) | 2:00 AM – 8:00 PM | 8:00 PM – 2:00 AM |
-| CET (UTC+1) | 7:00 PM – 1:00 PM next day | 1:00 PM – 7:00 PM |
+| 時區 | 離峰（2x） | 尖峰（1x） |
+|------|-----------|-----------|
+| UTC | 18:00 – 隔天 12:00 | 12:00 – 18:00 |
+| 台灣 (UTC+8) | 凌晨 2:00 – 晚上 8:00 | 晚上 8:00 – 凌晨 2:00 |
+| 日本 (UTC+9) | 凌晨 3:00 – 晚上 9:00 | 晚上 9:00 – 凌晨 3:00 |
+| 美西 PDT (UTC-7) | 上午 11:00 – 隔天上午 5:00 | 上午 5:00 – 上午 11:00 |
+| 歐洲 CET (UTC+1) | 晚上 7:00 – 隔天下午 1:00 | 下午 1:00 – 晚上 7:00 |
 
-> Note: The bonus usage **does not** count against your weekly (7-day) limit.
+> 備註：離峰加倍的用量**不會**計入你的 7 天週用量上限。
 
-## Installation
+## 安裝方式
 
-### Option 1: Auto-install
+### 方式一：自動安裝
 
 ```bash
 git clone https://github.com/darrell-tw-martech/claudecode-statusline.git
@@ -38,53 +38,53 @@ cd claudecode-statusline/promotion-2026-spring
 bash install.sh
 ```
 
-This will:
-- Detect your `~/.claude/statusline.sh`
-- Create a backup
-- Insert the promotion segment
+腳本會自動：
+- 偵測你的 `~/.claude/statusline.sh`
+- 建立備份
+- 插入 promotion segment
 
-### Option 2: Copy & paste
+### 方式二：手動貼上
 
-Copy the contents of [`promotion.sh`](./promotion.sh) into your `statusline.sh`.
+把 [`promotion.sh`](./promotion.sh) 的內容貼到你的 `statusline.sh` 中，放在你想顯示的位置。
 
-Place it wherever you want the segment to appear. It uses the `pl_add` function:
+使用 `pl_add` 函式：
 
 ```bash
-# pl_add <line_number> <bg_256color> <fg_256color> <text>
-pl_add 1 173 232 "⚡2x"   # orange bg, black text
-pl_add 1 239 245 "⚡1x"   # gray bg, gray text
-pl_add 1 124 255 "⚡2x ended"  # red bg, white text
+# pl_add <行號> <背景色_256> <前景色_256> <文字>
+pl_add 1 173 232 "⚡2x"        # 橘棕底黑字
+pl_add 1 239 245 "⚡1x"        # 深灰底灰字
+pl_add 1 124 255 "⚡2x ended"  # 紅底白字
 ```
 
-If your statusline doesn't use `pl_add`, adapt the color codes:
-- Off-peak: `\033[38;5;232;48;5;173m ⚡2x \033[0m`
-- Peak: `\033[38;5;245;48;5;239m ⚡1x \033[0m`
-- Ended: `\033[38;5;255;48;5;124m ⚡2x ended \033[0m`
+如果你的 statusline 沒有 `pl_add`，可以直接用 ANSI 色碼：
+- 離峰：`\033[38;5;232;48;5;173m ⚡2x \033[0m`
+- 尖峰：`\033[38;5;245;48;5;239m ⚡1x \033[0m`
+- 結束：`\033[38;5;255;48;5;124m ⚡2x ended \033[0m`
 
-### Option 3: Ask your AI
+### 方式三：叫 AI 幫你裝
 
-If you use Claude Code (or any AI coding assistant), just say:
+如果你用 Claude Code 或其他 AI 程式碼助手，直接說：
 
-> Read https://github.com/darrell-tw-martech/claudecode-statusline/blob/main/promotion-2026-spring/promotion.sh and add this 2x promotion indicator to my statusline.sh
+> 讀取 https://github.com/darrell-tw-martech/claudecode-statusline/blob/main/promotion-2026-spring/promotion.sh 然後幫我加到 statusline.sh
 
-The snippet is self-contained and well-commented — any AI can integrate it.
+程式碼完整且有註解，任何 AI 都能直接整合。
 
-## Requirements
+## 需求
 
-- Claude Code with custom statusline (`~/.claude/statusline.sh`)
-- Bash 3.2+ (macOS compatible)
-- A Powerline-style statusline with `pl_add` function (or adapt the ANSI codes)
+- Claude Code 並已啟用自訂 statusline（`~/.claude/statusline.sh`）
+- Bash 3.2+（macOS 內建即可）
+- Powerline 風格的 statusline 搭配 `pl_add` 函式（或自行改用 ANSI 色碼）
 
-## How it works
+## 運作原理
 
-The script checks UTC hour to determine peak vs. off-peak:
+腳本用 UTC 小時判斷尖峰/離峰：
 
 ```
-UTC 12:00–18:00 = EDT 8AM–2PM = Peak (1x)
-All other hours = Off-peak (2x)
+UTC 12:00–18:00 = EDT 8AM–2PM = 尖峰 (1x)
+其餘時段 = 離峰 (2x)
 ```
 
-Date checks ensure the segment only shows during the promotion (3/13–3/27), displays a one-day "ended" notice on 3/28, and fully disappears on 3/29.
+日期檢查確保 segment 只在活動期間（3/13–3/27）顯示，3/28 顯示「ended」提醒一天，3/29 起完全消失。
 
 ## License
 
