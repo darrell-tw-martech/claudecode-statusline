@@ -91,4 +91,4 @@ UTC 12:00–18:00 = EDT 8AM–2PM = 尖峰 (1x)
 
 ---
 
-Made by [Darrell Wang](https://github.com/Darrellwan) · [Threads @darrell_tw_](https://www.threads.net/@darrell_tw_)
+Made by Darrell Wang · [Threads @darrell_tw_](https://www.threads.net/@darrell_tw_)
