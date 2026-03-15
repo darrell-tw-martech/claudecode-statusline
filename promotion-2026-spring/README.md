@@ -6,23 +6,13 @@
 
 ## 顯示效果
 
-### Powerline 風格
-
 ![preview](./preview.png)
-
-### 純文字風格
-
-```
-[2x] ← 離峰（用量加倍）
-[1x] ← 尖峰（正常用量）
-[2x ended] ← 活動結束（僅 3/28）
-```
 
 | 狀態 | 顏色 | 時段 |
 |------|------|------|
-| `2x` | $\colorbox{#C4724A}{\color{black}\textsf{ 2x }}$ | 離峰（用量加倍） |
-| `1x` | $\colorbox{#4E4E4E}{\color{#8A8A8A}\textsf{ 1x }}$ | 尖峰（正常用量） |
-| `2x ended` | $\colorbox{#AF0000}{\color{white}\textsf{ 2x ended }}$ | 活動結束（僅 3/28，3/29 起自動消失） |
+| 2x | ![2x](./badges/2x.svg) | 離峰（用量加倍） |
+| 1x | ![1x](./badges/1x.svg) | 尖峰（正常用量） |
+| 2x ended | ![2x ended](./badges/2x-ended.svg) | 活動結束（僅 3/28，3/29 起自動消失） |
 
 ## 時區對照
 
