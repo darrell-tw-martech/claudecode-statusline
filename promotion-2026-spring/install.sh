@@ -36,11 +36,12 @@ if ! grep -q "pl_add" "$STATUSLINE"; then
 fi
 
 # Backup
-cp "$STATUSLINE" "${STATUSLINE}.bak.$(date +%s)"
-echo "Backup saved: ${STATUSLINE}.bak.*"
+BACKUP="${STATUSLINE}.bak.$(date +%s)"
+cp "$STATUSLINE" "$BACKUP"
+echo "Backup saved: $BACKUP"
 
 # Find insertion point: before the first pl_render call
-INSERTION_LINE=$(grep -n "pl_render" "$STATUSLINE" | head -1 | cut -d: -f1)
+INSERTION_LINE=$(grep -n "^[^#]*pl_render" "$STATUSLINE" | head -1 | cut -d: -f1)
 
 if [ -n "$INSERTION_LINE" ]; then
     {

@@ -14,14 +14,16 @@
 
 ## 時區對照
 
-活動在 **EDT 8AM–2PM（UTC 12:00–18:00）** 為尖峰，其餘時段用量加倍。
+- **平日**：EDT 8AM–2PM（UTC 12:00–18:00）為尖峰，其餘時段用量加倍
+- **假日**：整天 2x
 
 此活動全程在美國夏令時間（EDT）期間內，不受 DST 切換影響。
 
-| 時區 | 離峰（2x） | 尖峰（1x） |
+| | 離峰（2x） | 尖峰（1x） |
 |------|-----------|-----------|
-| UTC | 18:00 – 隔天 12:00 | 12:00 – 18:00 |
-| 台灣 (UTC+8) | 凌晨 2:00 – 晚上 8:00 | 晚上 8:00 – 凌晨 2:00 |
+| 平日（UTC） | 18:00 – 隔天 12:00 | 12:00 – 18:00 |
+| 平日（台灣） | 凌晨 2:00 – 晚上 8:00 | 晚上 8:00 – 凌晨 2:00 |
+| 假日 | 整天 | — |
 
 > 備註：離峰加倍的用量**不會**計入你的 7 天週用量上限。
 
@@ -33,17 +35,23 @@
 
 ```bash
 # 2x Promotion (2026-03-13 ~ 2026-03-27)
+# Weekdays: 2x outside EDT 8AM-2PM / Weekends: 2x all day
 PROMO_END="2026-03-28"
 PROMO_GONE="2026-03-29"
 TODAY_DATE=$(date '+%Y-%m-%d')
 if [[ "$TODAY_DATE" < "$PROMO_GONE" ]]; then
-    UTC_HOUR=$(date -u '+%H')
-    UTC_HOUR_INT=$((10#$UTC_HOUR))
     if [[ "$TODAY_DATE" < "$PROMO_END" ]]; then
-        if [ "$UTC_HOUR_INT" -ge 12 ] && [ "$UTC_HOUR_INT" -lt 18 ]; then
-            PROMO_LABEL="\033[38;5;245;48;5;239m 1x \033[0m"
-        else
+        EDT_DOW=$(TZ='America/New_York' date '+%w')
+        if [ "$EDT_DOW" -eq 0 ] || [ "$EDT_DOW" -eq 6 ]; then
             PROMO_LABEL="\033[38;5;232;48;5;173m 2x \033[0m"
+        else
+            UTC_HOUR=$(date -u '+%H')
+            UTC_HOUR_INT=$((10#$UTC_HOUR))
+            if [ "$UTC_HOUR_INT" -ge 12 ] && [ "$UTC_HOUR_INT" -lt 18 ]; then
+                PROMO_LABEL="\033[38;5;245;48;5;239m 1x \033[0m"
+            else
+                PROMO_LABEL="\033[38;5;232;48;5;173m 2x \033[0m"
+            fi
         fi
     else
         PROMO_LABEL="\033[38;5;255;48;5;124m 2x ended \033[0m"
@@ -83,8 +91,9 @@ bash install.sh
 腳本用 UTC 小時判斷尖峰/離峰：
 
 ```
-UTC 12:00-18:00 = EDT 8AM-2PM = 尖峰 (1x)
-其餘時段 = 離峰 (2x)
+假日（EDT 週六/週日）→ 整天 2x
+平日 UTC 12:00-18:00 = EDT 8AM-2PM → 尖峰 (1x)
+平日其餘時段 → 離峰 (2x)
 ```
 
 日期檢查確保 segment 只在活動期間（3/13–3/27）顯示，3/28 顯示「ended」提醒一天，3/29 起完全消失。
