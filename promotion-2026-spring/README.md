@@ -33,7 +33,7 @@ The promotion doubles your 5-hour usage outside **8 AM – 2 PM ET (EDT, UTC-4)*
 ### Option 1: Auto-install
 
 ```bash
-git clone https://github.com/Darrellwan/claudecode-statusline.git
+git clone https://github.com/darrell-tw-martech/claudecode-statusline.git
 cd claudecode-statusline/promotion-2026-spring
 bash install.sh
 ```
@@ -65,7 +65,7 @@ If your statusline doesn't use `pl_add`, adapt the color codes:
 
 If you use Claude Code (or any AI coding assistant), just say:
 
-> Read https://github.com/Darrellwan/claudecode-statusline/blob/main/promotion-2026-spring/promotion.sh and add this 2x promotion indicator to my statusline.sh
+> Read https://github.com/darrell-tw-martech/claudecode-statusline/blob/main/promotion-2026-spring/promotion.sh and add this 2x promotion indicator to my statusline.sh
 
 The snippet is self-contained and well-commented — any AI can integrate it.
 
