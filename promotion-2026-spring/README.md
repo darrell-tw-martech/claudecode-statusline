@@ -1,77 +1,100 @@
-# Claude Code Statusline — 2x 用量顯示
+# Claude Code Statusline — 2x Promotion Tracker
 
-在 Claude Code 的 statusline 上即時顯示你是否在 **2 倍用量**的時段。
+Anthropic is [doubling usage limits](https://support.anthropic.com/en/articles/11360-claude-march-2026-usage-promotion) during off-peak hours through March 27, 2026. But Claude Code doesn't tell you when you're in 2x mode.
 
-**活動期間：** 2026 年 3 月 13 日 ~ 3 月 27 日（[Anthropic 官方公告](https://support.anthropic.com/en/articles/11360-claude-march-2026-usage-promotion)）
+This statusline segment fixes that — showing peak/off-peak status, days remaining, and a transition countdown, right in your terminal.
 
-## 顯示效果
+## What it looks like
 
-| 狀態 | 顏色 | 時段 |
-|------|------|------|
-| 2x | ![2x](https://img.shields.io/badge/%E2%9A%A1%202x-C4724A?style=flat-square&labelColor=C4724A&color=C4724A) | 離峰（用量加倍） |
-| 1x | ![1x](https://img.shields.io/badge/%E2%9A%A1%201x-4E4E4E?style=flat-square&labelColor=4E4E4E&color=4E4E4E) | 尖峰（正常用量） |
-| 2x ended | ![2x ended](https://img.shields.io/badge/%E2%9A%A1%202x%20ended-AF0000?style=flat-square&labelColor=AF0000&color=AF0000) | 活動結束（僅 3/28，3/29 起自動消失） |
+| Status | Badge | When |
+|--------|-------|------|
+| Off-peak | ![2x](https://img.shields.io/badge/%E2%9A%A1%202x%2010d-C4724A?style=flat-square) | Usage doubled |
+| Peak | ![1x](https://img.shields.io/badge/%E2%9A%A1%201x%2010d-4E4E4E?style=flat-square) | Normal usage |
+| Transition | ![transition](https://img.shields.io/badge/%E2%9A%A1%202x%2010d%20%E2%94%82%2042m%E2%86%921x-C4724A?style=flat-square) | Switch within 60 min |
+| Ended | ![ended](https://img.shields.io/badge/%E2%9A%A1%202x%20ended-AF0000?style=flat-square) | 3/28 only, then auto-removes |
 
-## 時區對照
+**Features:**
+- Days remaining until promo ends (`10d`)
+- Transition countdown when switch is within 60 minutes (`│ 42m→1x`)
+- Both features are optional — configure via `~/.claude/promo.conf`
 
-- **平日**：EDT 8AM–2PM（UTC 12:00–18:00）為尖峰，其餘時段用量加倍
-- **假日**：整天 2x
+## Setup
 
-此活動全程在美國夏令時間（EDT）期間內，不受 DST 切換影響。
+### Option 1: Paste into your statusline.sh (30 seconds)
 
-| | 離峰（2x） | 尖峰（1x） |
-|------|-----------|-----------|
-| 平日（UTC） | 18:00 – 隔天 12:00 | 12:00 – 18:00 |
-| 平日（台灣） | 凌晨 2:00 – 晚上 8:00 | 晚上 8:00 – 凌晨 2:00 |
-| 假日 | 整天 | — |
-
-> 備註：離峰加倍的用量**不會**計入你的 7 天週用量上限。
-
-## 安裝方式
-
-### 方式一：直接貼到你的 statusline.sh
-
-最簡單的方式，把以下程式碼貼到你的 `statusline.sh` 中想顯示的位置：
+Copy this into your `~/.claude/statusline.sh` where you want it to appear:
 
 ```bash
 # 2x Promotion (2026-03-13 ~ 2026-03-27)
-# Weekdays: 2x outside EDT 8AM-2PM / Weekends: 2x all day
-PROMO_END="2026-03-28"
-PROMO_GONE="2026-03-29"
+# Options: set PROMO_SHOW_TRANSITION=0 or PROMO_SHOW_DAYS_LEFT=0 to disable
+PROMO_SHOW_TRANSITION=1
+PROMO_SHOW_DAYS_LEFT=1
+[ -f "$HOME/.claude/promo.conf" ] && source "$HOME/.claude/promo.conf"
+PROMO_START="2026-03-13"; PROMO_END="2026-03-28"; PROMO_GONE="2026-03-29"
 TODAY_DATE=$(date '+%Y-%m-%d')
-if [[ "$TODAY_DATE" < "$PROMO_GONE" ]]; then
+if [[ "$TODAY_DATE" < "$PROMO_GONE" ]] && [[ ! "$TODAY_DATE" < "$PROMO_START" ]]; then
     if [[ "$TODAY_DATE" < "$PROMO_END" ]]; then
         EDT_DOW=$(TZ='America/New_York' date '+%w')
+        UTC_HOUR=$(date -u '+%H'); UTC_MIN=$(date -u '+%M')
+        UTC_HOUR_INT=$((10#$UTC_HOUR)); UTC_MIN_INT=$((10#$UTC_MIN))
+        PROMO_DAYS_LEFT=""
+        if [ "$PROMO_SHOW_DAYS_LEFT" = "1" ]; then
+            PROMO_END_EPOCH=$(date -j -f "%Y-%m-%d" "$PROMO_END" "+%s" 2>/dev/null)
+            TODAY_EPOCH=$(date -j -f "%Y-%m-%d" "$TODAY_DATE" "+%s" 2>/dev/null)
+            [ -n "$PROMO_END_EPOCH" ] && [ -n "$TODAY_EPOCH" ] && \
+                PROMO_DAYS_LEFT=$(( (PROMO_END_EPOCH - TODAY_EPOCH) / 86400 ))
+        fi
         if [ "$EDT_DOW" -eq 0 ] || [ "$EDT_DOW" -eq 6 ]; then
-            PROMO_LABEL="\033[38;5;232;48;5;173m 2x \033[0m"
+            PROMO_LABEL="\033[38;5;232;48;5;173m ⚡2x"
+            [ -n "$PROMO_DAYS_LEFT" ] && PROMO_LABEL+=" ${PROMO_DAYS_LEFT}d"
+            PROMO_LABEL+=" \033[0m"
         else
-            UTC_HOUR=$(date -u '+%H')
-            UTC_HOUR_INT=$((10#$UTC_HOUR))
-            if [ "$UTC_HOUR_INT" -ge 12 ] && [ "$UTC_HOUR_INT" -lt 18 ]; then
-                PROMO_LABEL="\033[38;5;245;48;5;239m 1x \033[0m"
+            IS_PEAK=0
+            [ "$UTC_HOUR_INT" -ge 12 ] && [ "$UTC_HOUR_INT" -lt 18 ] && IS_PEAK=1
+            PROMO_TRANSITION=""
+            if [ "$PROMO_SHOW_TRANSITION" = "1" ]; then
+                CURRENT_TOTAL_MIN=$((UTC_HOUR_INT * 60 + UTC_MIN_INT))
+                if [ "$IS_PEAK" -eq 1 ]; then
+                    MINS_TO_SWITCH=$((18 * 60 - CURRENT_TOTAL_MIN))
+                elif [ "$CURRENT_TOTAL_MIN" -lt $((12 * 60)) ]; then
+                    MINS_TO_SWITCH=$((12 * 60 - CURRENT_TOTAL_MIN))
+                else
+                    MINS_TO_SWITCH=$(( (24 * 60 - CURRENT_TOTAL_MIN) + 12 * 60 ))
+                fi
+                if [ "$MINS_TO_SWITCH" -le 60 ] && [ "$MINS_TO_SWITCH" -gt 0 ]; then
+                    [ "$IS_PEAK" -eq 1 ] && PROMO_TRANSITION=" │ ${MINS_TO_SWITCH}m→2x" \
+                                          || PROMO_TRANSITION=" │ ${MINS_TO_SWITCH}m→1x"
+                fi
+            fi
+            if [ "$IS_PEAK" -eq 1 ]; then
+                PROMO_LABEL="\033[38;5;245;48;5;239m ⚡1x"
+                [ -n "$PROMO_DAYS_LEFT" ] && PROMO_LABEL+=" ${PROMO_DAYS_LEFT}d"
+                PROMO_LABEL+="${PROMO_TRANSITION} \033[0m"
             else
-                PROMO_LABEL="\033[38;5;232;48;5;173m 2x \033[0m"
+                PROMO_LABEL="\033[38;5;232;48;5;173m ⚡2x"
+                [ -n "$PROMO_DAYS_LEFT" ] && PROMO_LABEL+=" ${PROMO_DAYS_LEFT}d"
+                PROMO_LABEL+="${PROMO_TRANSITION} \033[0m"
             fi
         fi
     else
-        PROMO_LABEL="\033[38;5;255;48;5;124m 2x ended \033[0m"
+        PROMO_LABEL="\033[38;5;255;48;5;124m ⚡2x ended \033[0m"
     fi
 fi
 ```
 
-然後在你的 `echo` 輸出中加入 `$PROMO_LABEL` 即可。不依賴任何框架或函式。
+Then add `$PROMO_LABEL` to your `echo` output. No frameworks or dependencies needed.
 
-### 方式二：叫 AI 幫你裝
+### Option 2: Let AI install it
 
-如果你用 Claude Code 或其他 AI 程式碼助手，直接說：
+If you use Claude Code or another AI coding assistant, just say:
 
-> 讀取 https://github.com/darrell-tw-martech/claudecode-statusline/blob/main/promotion-2026-spring/promotion.sh 然後幫我加到 statusline.sh
+> Read https://github.com/darrell-tw-martech/claudecode-statusline/blob/main/promotion-2026-spring/promotion.sh and add it to my statusline.sh
 
-程式碼完整且有註解，任何 AI 都能直接整合。
+The code is fully commented — any AI can integrate it directly.
 
-### 方式三：自動安裝（Powerline 風格）
+### Option 3: Auto-install (Powerline style)
 
-如果你的 statusline 使用 `pl_add` 函式（Powerline 色塊風格）：
+If your statusline uses the `pl_add` function (Powerline segment style):
 
 ```bash
 git clone https://github.com/darrell-tw-martech/claudecode-statusline.git
@@ -79,24 +102,51 @@ cd claudecode-statusline/promotion-2026-spring
 bash install.sh
 ```
 
-腳本會自動偵測 `~/.claude/statusline.sh`、建立備份、插入 segment。
+The script detects `~/.claude/statusline.sh`, creates a backup, and inserts the segment.
 
-## 需求
+## Configuration
 
-- Claude Code 並已啟用自訂 statusline（`~/.claude/statusline.sh`）
-- Bash 3.2+（macOS 內建即可）
+Create `~/.claude/promo.conf` to toggle features:
 
-## 運作原理
+```bash
+# Show transition countdown in last 60 min before switch (default: 1)
+PROMO_SHOW_TRANSITION=1
 
-腳本用 UTC 小時判斷尖峰/離峰：
-
-```
-假日（EDT 週六/週日）→ 整天 2x
-平日 UTC 12:00-18:00 = EDT 8AM-2PM → 尖峰 (1x)
-平日其餘時段 → 離峰 (2x)
+# Show remaining days until promo ends (default: 1)
+PROMO_SHOW_DAYS_LEFT=1
 ```
 
-日期檢查確保 segment 只在活動期間（3/13–3/27）顯示，3/28 顯示「ended」提醒一天，3/29 起完全消失。
+## Peak hours by timezone
+
+| Timezone | Peak (1x) | Full workday in 2x? |
+|----------|-----------|---------------------|
+| Taiwan (CST) | 8:00 PM – 2:00 AM | Yes |
+| Japan (JST) | 9:00 PM – 3:00 AM | Yes |
+| India (IST) | 5:30 PM – 11:30 PM | Yes |
+| Australia (AEDT) | 11:00 PM – 5:00 AM | Yes |
+| UK (GMT) | 12:00 PM – 6:00 PM | No (afternoon overlap) |
+| US West (PDT) | 5:00 AM – 11:00 AM | No (morning overlap) |
+| US East (EDT) | 8:00 AM – 2:00 PM | No (full overlap) |
+
+Weekends (EDT) are 2x all day.
+
+> Off-peak usage does **not** count toward your 7-day rolling limit.
+
+## How it works
+
+```
+Weekend (EDT Sat/Sun)        → 2x all day
+Weekday UTC 12:00–18:00      → Peak (1x)
+Weekday all other hours      → Off-peak (2x)
+Within 60 min of switch      → Shows countdown (e.g., "│ 42m→1x")
+```
+
+The segment auto-appears on 3/13, shows "ended" on 3/28, and disappears on 3/29.
+
+## Requirements
+
+- Claude Code with custom statusline enabled (`~/.claude/statusline.sh`)
+- Bash 3.2+ (macOS built-in)
 
 ## License
 
@@ -104,4 +154,4 @@ bash install.sh
 
 ---
 
-Made by Darrell Wang · [Threads @darrell_tw_](https://www.threads.net/@darrell_tw_)
+Made by [Darrell Wang](https://www.threads.net/@darrell_tw_)

@@ -1,12 +1,12 @@
 # Claude Code Statusline Snippets
 
-Claude Code 自訂 statusline 的實用片段集合。
+Drop-in snippets for Claude Code's custom statusline. Copy-paste ready — no frameworks, no dependencies.
 
 ## Snippets
 
-| 名稱 | 說明 | 狀態 |
-|------|------|------|
-| [promotion-2026-spring](./promotion-2026-spring/) | 2x 用量加倍時段顯示（3/13–3/27） | 活動中 |
+| Name | Description | Status |
+|------|-------------|--------|
+| [promotion-2026-spring](./promotion-2026-spring/) | 2x off-peak usage tracker with countdown (3/13–3/27) | Active |
 
 ## License
 
@@ -14,4 +14,4 @@ Claude Code 自訂 statusline 的實用片段集合。
 
 ---
 
-Made by Darrell Wang · [Threads @darrell_tw_](https://www.threads.net/@darrell_tw_)
+Made by [Darrell Wang](https://www.threads.net/@darrell_tw_)
