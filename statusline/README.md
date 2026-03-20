@@ -2,8 +2,7 @@
 
 A full-featured, two-line Powerline statusline for [Claude Code](https://claude.ai/code). Shows model info, git status, context usage, rate limits, session cost, and more — all in colored Powerline segments.
 
-<!-- TODO: add screenshot here -->
-<!-- ![Screenshot](./screenshots/statusline-full.png) -->
+![Statusline screenshot with annotated segments](./screenshots/statusline-full.png)
 
 ## Quick Start
 
