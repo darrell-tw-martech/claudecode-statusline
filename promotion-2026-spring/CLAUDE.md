@@ -59,6 +59,11 @@ TZ=UTC faketime '2026-03-29 10:00:00' bash promotion.sh  # should show nothing
 - Transition uses `│` (box-drawing U+2502) as separator — chosen via A/B testing over `·`, `←`, `/`
 - **Two snippet variants must stay in sync**: `promotion.sh` (Powerline) and README inline (ANSI). They have slightly different code structure but identical behavior. When modifying one, check the other.
 
+## Statusline 技術備註
+
+- **rate_limits stdin（2.1.80+）已取代 OAuth curl**：`~/.claude/statusline.sh` 從 stdin JSON 的 `rate_limits.five_hour` / `rate_limits.seven_day` 讀取配額，不再用 `curl https://api.anthropic.com/api/oauth/usage`。OAuth 版本備份在 `~/.claude/statusline-oauth.sh.bak`（OAuth 獨有 `seven_day_sonnet` 和 `extra_usage` 欄位）。
+- **stdin JSON 不提供 permission mode**（2.1.80）：bypass/default/plan 狀態由 Claude Code UI 直接渲染，不經過 statusline script。不要再花時間調查。
+
 ## Git Push
 
 This repo belongs to the `darrell-tw-martech` org. The user's default GitHub account is `Darrellwan`, which has no push access.

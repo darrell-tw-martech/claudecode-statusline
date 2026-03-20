@@ -1,5 +1,7 @@
 # Claude Code Powerline Statusline
 
+[English](./README.md) | [繁體中文](./README.zh-TW.md)
+
 A full-featured, two-line Powerline statusline for [Claude Code](https://claude.ai/code). Shows model info, git status, context usage, rate limits, session cost, and more — all in colored Powerline segments.
 
 ![Statusline screenshot with annotated segments](./screenshots/statusline-full.png)
@@ -227,16 +229,6 @@ Common customization requests:
 - "No promo" → delete the promo module block and its pl_add
 - "Different colors" → change the 256-color codes in pl_add calls
 - "Single line" → move all pl_add calls to line 1, remove line 2 assembly
-
-## Testing
-
-```bash
-# Full test with mock data
-echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"/tmp/my-project"},"session_id":"test","transcript_path":"","context_window":{"used_percentage":42},"cost":{"total_cost_usd":1.23,"total_lines_added":50,"total_lines_removed":10},"rate_limits":{"five_hour":{"used_percentage":30,"resets_at":9999999999},"seven_day":{"used_percentage":65,"resets_at":9999999999}}}' | bash statusline.sh
-
-# Minimal test (no rate_limits — simulates first call)
-echo '{"model":{"display_name":"Sonnet"},"workspace":{"current_dir":"/tmp"},"session_id":"x","transcript_path":"","context_window":{"used_percentage":5},"cost":{"total_cost_usd":0}}' | bash statusline.sh
-```
 
 ## License
 
