@@ -6,7 +6,8 @@ Drop-in snippets for Claude Code's custom statusline. Copy-paste ready — no fr
 
 | Name | Description | Status |
 |------|-------------|--------|
-| [promotion-2026-spring](./promotion-2026-spring/) | 2x off-peak usage tracker with countdown (3/13–3/27) | Active |
+| [statusline](./statusline/) | Full Powerline statusline with rate limits, context bar, git, cost, and more | Active |
+| [promotion-2026-spring](./promotion-2026-spring/) | 2x off-peak usage tracker with countdown (3/13–3/27) | Seasonal |
 
 ## License
 

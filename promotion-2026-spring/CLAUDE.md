@@ -58,3 +58,15 @@ TZ=UTC faketime '2026-03-29 10:00:00' bash promotion.sh  # should show nothing
 - Date comparisons use string comparison (`<`) which works for ISO format dates
 - Transition uses `│` (box-drawing U+2502) as separator — chosen via A/B testing over `·`, `←`, `/`
 - **Two snippet variants must stay in sync**: `promotion.sh` (Powerline) and README inline (ANSI). They have slightly different code structure but identical behavior. When modifying one, check the other.
+
+## Git Push
+
+This repo belongs to the `darrell-tw-martech` org. The user's default GitHub account is `Darrellwan`, which has no push access.
+
+```bash
+# Before push
+gh auth switch --user darrell-tw-martech
+git push
+# After push — switch back
+gh auth switch --user Darrellwan
+```
